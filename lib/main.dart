@@ -19,7 +19,8 @@ class MyApp extends StatelessWidget {
         textTheme: const TextTheme(
           bodyMedium: TextStyle(color: Colors.black87, fontSize: 16),
           bodySmall: TextStyle(color: Colors.black54, fontSize: 14),
-          titleLarge: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+          titleLarge: TextStyle(
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
       home: const TodoHomePage(),
@@ -45,7 +46,8 @@ class _TodoHomePageState extends State<TodoHomePage> {
         _tasks.clear();
 
         // Generate a random number of times to add the task (between 2 and 9)
-        final randomCount = 2 + (Random().nextInt(8)); // Random number between 2 and 9
+        final randomCount =
+            2 + (Random().nextInt(8)); // Random number between 2 and 9
         for (int i = 0; i < randomCount; i++) {
           // Create a task and mark it as completed by default (intentional bug)
           _tasks.add(Task(name: _taskController.text, isCompleted: true));
@@ -54,7 +56,6 @@ class _TodoHomePageState extends State<TodoHomePage> {
       });
     }
   }
-
 
   void _removeTask(int index) {
     setState(() {
@@ -73,6 +74,43 @@ class _TodoHomePageState extends State<TodoHomePage> {
         _removeTask(index);
       });
     }
+  }
+
+  void editTask(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController _editController = TextEditingController();
+        _editController.text = _tasks[index].name;
+
+        return AlertDialog(
+          title: const Text('Edit Task'),
+          content: TextField(
+            controller: _editController,
+            decoration: const InputDecoration(
+              labelText: 'Task Name',
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Save'),
+              onPressed: () {
+                setState(() {
+                  _tasks[index].name = _editController.text;
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -102,7 +140,8 @@ class _TodoHomePageState extends State<TodoHomePage> {
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 15),
                     ),
                   ),
                 ),
@@ -110,6 +149,7 @@ class _TodoHomePageState extends State<TodoHomePage> {
                 FloatingActionButton(
                   backgroundColor: Theme.of(context).primaryColor,
                   onPressed: () {
+                    _addTask();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Task added successfully'),
@@ -119,7 +159,6 @@ class _TodoHomePageState extends State<TodoHomePage> {
                   },
                   child: const Icon(Icons.add),
                 ),
-
               ],
             ),
             const SizedBox(height: 20),
@@ -135,7 +174,9 @@ class _TodoHomePageState extends State<TodoHomePage> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
                       border: Border.all(
-                        color: _tasks[index].isCompleted ? Colors.green : Colors.transparent,
+                        color: _tasks[index].isCompleted
+                            ? Colors.green
+                            : Colors.transparent,
                         width: 2,
                       ),
                     ),
@@ -145,7 +186,9 @@ class _TodoHomePageState extends State<TodoHomePage> {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          decoration: _tasks[index].isCompleted ? TextDecoration.lineThrough : null,
+                          decoration: _tasks[index].isCompleted
+                              ? TextDecoration.lineThrough
+                              : null,
                         ),
                       ),
                       trailing: Row(
@@ -153,10 +196,18 @@ class _TodoHomePageState extends State<TodoHomePage> {
                         children: [
                           IconButton(
                             icon: Icon(
-                              _tasks[index].isCompleted ? Icons.check_box : Icons.check_box_outline_blank,
-                              color: _tasks[index].isCompleted ? Colors.green : Colors.grey,
+                              _tasks[index].isCompleted
+                                  ? Icons.check_box
+                                  : Icons.check_box_outline_blank,
+                              color: _tasks[index].isCompleted
+                                  ? Colors.green
+                                  : Colors.grey,
                             ),
                             onPressed: () => _toggleCompletion(index),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () => editTask(index),
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
