@@ -100,6 +100,43 @@ class _TodoHomePageState extends State<TodoHomePage> {
     }
   }
 
+  void editTask(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController _editController = TextEditingController();
+        _editController.text = _tasks[index].name;
+
+        return AlertDialog(
+          title: const Text('Edit Task'),
+          content: TextField(
+            controller: _editController,
+            decoration: const InputDecoration(
+              labelText: 'Task Name',
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Save'),
+              onPressed: () {
+                setState(() {
+                  _tasks[index].name = _editController.text;
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -191,6 +228,10 @@ class _TodoHomePageState extends State<TodoHomePage> {
                                   : Colors.grey,
                             ),
                             onPressed: () => _toggleCompletion(index),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () => editTask(index),
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
