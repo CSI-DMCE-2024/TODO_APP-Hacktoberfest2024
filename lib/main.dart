@@ -100,6 +100,33 @@ class _TodoHomePageState extends State<TodoHomePage> {
     }
   }
 
+  void _showDeleteConfirmationDialog(BuildContext context, int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Delete'),
+          content: Text('Are you sure you want to delete this task?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: Text('Delete'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                _removeTask(index); // Remove the task
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,6 +170,7 @@ class _TodoHomePageState extends State<TodoHomePage> {
                         duration: Duration(seconds: 2),
                       ),
                     );
+                    _addTask();
                   },
                   child: const Icon(Icons.add),
                 ),
